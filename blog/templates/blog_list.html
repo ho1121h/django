@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="container">
+    <h1 class="mt-5">블로그</h1>       
+    <div class="list-group">
+      <style>
+        .list-group-item:hover {
+            z-index: 2;
+            color: var(--bs-list-group-active-color);
+            background-color: var(--bs-list-group-active-bg);
+            border-color: var(--bs-list-group-active-border-color);
+        }
+      </style>
+      <div>
+        <a href="{% url 'blog_post' %}" class="btn btn-primary float-end"> 글 쓰기 </a>
+      </div>
+
+      {% for post in post_list %}
+      <a href="{% url 'blog_detail' post.id %}" class="list-group-item list-group-item-action " aria-current="true">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{ post.title }}</h5>
+          <small>{{ post.created_at }}</small>
+        </div>
+        <p class="mb-1">{{ post.content }}</p>
+        <!--<small>And some small print.</small>-->
+        
+        <form method="POST" action={% url 'like_post' %}>
+          <input type='hidden' name='blog_id' value='{{ post.id }}' />
+
+          {% csrf_token %}
+          {% comment %} {{request.user.like_post.all}} {% endcomment %}
+          <button type="submit" >
+           
+            {% if post in request.user.like_post.all %}
+              좋아요 취소
+            {% else %}
+              좋아요
+            {% endif %}
+          </button>
+        </form>
+      </a>
+      
+      {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+       <!--style>
+            .footer{
+                background-color: violet !important;
+            }
+
+        </style>--> 
+{% endblock %}
